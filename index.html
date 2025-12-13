@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Vue</title>
+    <style id="primevue-theme"></style>
+    <style>
+      :root {
+        color-scheme: light dark;
+        color: rgba(255, 255, 255, 0.87);
+        background-color: #242424;
+
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" style="display: none;"></div>
+    <div style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+      <div>
+        <h3>Button:</h3>
+        <as-button label="Click me!" message="Ok"></as-button>
+      </div>
+      <div>
+        <h3>Input:</h3>
+        <as-input></as-input>
+      </div>
+      <div>
+        <h3>Date:</h3>
+        <as-date placeholder="Select date"></as-date>
+      </div>
+      <div>
+        <h3>Time:</h3>
+        <as-time placeholder="Select time"></as-time>
+      </div>
+      <div>
+        <h3>Checkbox:</h3>
+        <as-check></as-check>
+      </div>
+      <div>
+        <h3>Switch:</h3>
+        <as-switch></as-switch>
+      </div>
+      <div>
+        <h3>Select:</h3>
+        <as-select label="Selecciona" options="label=JavaScript,value=js;label=TypeScript,value=ts;label=Python,value=py;label=Java,value=java"></as-select>
+      </div>
+      <div>
+        <h3>Textarea:</h3>
+        <as-text></as-text>
+      </div>
+      <div>
+        <h3>Radio:</h3>
+        <as-radio></as-radio>
+      </div>
+      <div>
+        <h3>AutoComplete:</h3>
+        <as-complete label="Buscar lenguaje" options="label=JavaScript,value=js;label=TypeScript,value=ts;label=Python,value=py;label=Java,value=java"></as-complete>
+      </div>
+      <div>
+        <h3>Box:</h3>
+        <as-box dim="true">
+          <p>Content inside box</p>
+          <div>
+            <h3>Confirm:</h3>
+            <as-confirm label="Delete" message="Are you sure you want to delete this item?"></as-confirm>
+          </div>
+        </as-box>
+      </div>
+      <div>
+        <h3>Image:</h3>
+        <as-image url="https://placehold.co/300x200"></as-image>
+      </div>
+      <div>
+        <h3>Video:</h3>
+        <as-video url="https://www.youtube.com/embed/dQw4w9WgXcQ"></as-video>
+      </div>
+      <div>
+        <h3>Embed:</h3>
+        <as-embed url="https://www.example.com"></as-embed>
+      </div>
+      <div>
+        <h3>DataGrid:</h3>
+        <as-datagrid id="grid" theme="light" selectable filterable pageable actionable></as-datagrid>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ce.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const grid = document.getElementById('grid');
+        if (grid) {
+          grid.addEventListener('row-select', (e) => {
+            console.log('Row selected:', e.detail);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
