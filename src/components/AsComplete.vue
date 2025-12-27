@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed } from 'vue'
-import AutoComplete from 'primevue/autocomplete'
+import AutoComplete from '@/volt/AutoComplete.vue'
 
 const props = defineProps({
   label: { type: String, default: '' },
   value: { type: String, default: '' },
-  options: { type: String, default: 'label=A,value=A;label=B,value=B;label=C,value=C' }
+  options: { type: String, default: 'label=A,value=A;label=B,value=B;label=C,value=C' },
+  readonly: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false }
 })
 
 const selectedValue = ref(props.value)
@@ -35,11 +37,13 @@ const search = (event) => {
 </script>
 
 <template>
-    <AutoComplete 
-      v-model="selectedValue" 
-      :suggestions="filteredItems" 
-      @complete="search"
-      optionLabel="label"
-      :placeholder="label || 'Buscar...'"
-    />
+  <AutoComplete 
+    v-model="selectedValue" 
+    :suggestions="filteredItems" 
+    @complete="search"
+    optionLabel="label"
+    :placeholder="label || 'Buscar...'"
+    :readonly="readonly"
+    :disabled="disabled"
+  />
 </template>

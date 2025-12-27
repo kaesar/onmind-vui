@@ -1,24 +1,15 @@
 <script setup>
-import { ref } from 'vue'
-import Button from 'primevue/button'
-import ConfirmDialog from 'primevue/confirmdialog'
+import Button from '@/volt/Button.vue'
+import ConfirmDialog from '@/volt/ConfirmDialog.vue'
 import { useConfirm } from 'primevue/useconfirm'
 
 const props = defineProps({
-  label: {
-    type: String,
-    default: 'Oops!'
-  },
-  link: {
-    type: String,
-    default: ''
-  },
-  message: {
-    type: String,
-    default: ''
-  }
+  label: { type: String, default: 'Oops!' },
+  link: { type: String, default: '' },
+  message: { type: String, default: '' }
 })
 
+const emit = defineEmits(['confirm-tap'])
 const confirm = useConfirm()
 
 function handleConfirm() {
@@ -36,16 +27,16 @@ function handleConfirm() {
       severity: 'danger'
     },
     accept: () => {
-      console.log('Confirmed!')
       if (props.link) {
         location.assign(props.link)
       }
+      emit('confirm-tap')
     }
   })
 }
 </script>
 
 <template>
-  <Button :label="label" @click="handleConfirm" severity="danger" style="cursor: pointer;" />
+  <Button :label="label" @click="handleConfirm" severity="danger" class="cursor-pointer" />
   <ConfirmDialog />
 </template>

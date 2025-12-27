@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import RadioButton from 'primevue/radiobutton'
+import RadioButton from '@/volt/RadioButton.vue'
 
 const props = defineProps({
   label: { type: String, default: '' },
@@ -24,15 +24,15 @@ const items = computed(() => {
 </script>
 
 <template>
-    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-        <div v-if="label" style="width: 100%; font-weight: 500;">{{ label }}</div>
-        <div v-for="(item, index) in items" :key="index" style="display: flex; align-items: center;">
-            <RadioButton 
-              v-model="selectedValue" 
-              :inputId="`radio-${index}`" 
-              :value="item.value" 
-            />
-            <label :for="`radio-${index}`" style="margin-left: 0.5rem;">{{ item.label }}</label>
-        </div>
+  <div class="flex flex-wrap gap-4">
+    <div v-if="label" class="w-full font-medium">{{ label }}</div>
+    <div v-for="(item, index) in items" :key="index" class="flex items-center" @click="selectedValue = item.value" style="cursor: pointer;">
+      <RadioButton 
+        v-model="selectedValue" 
+        :inputId="`radio-${index}`" 
+        :value="item.value" 
+      />
+      <label :for="`radio-${index}`" class="ml-2">{{ item.label }}</label>
     </div>
+  </div>
 </template>

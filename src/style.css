@@ -1,34 +1,214 @@
+@import "tailwindcss";
+
+:root {
+  --p-primary-50: #eff6ff;
+  --p-primary-100: #dbeafe;
+  --p-primary-200: #bfdbfe;
+  --p-primary-300: #93c5fd;
+  --p-primary-400: #60a5fa;
+  --p-primary-500: #3b82f6;
+  --p-primary-600: #2563eb;
+  --p-primary-700: #1d4ed8;
+  --p-primary-800: #1e40af;
+  --p-primary-900: #1e3a8a;
+  --p-primary-950: #172554;
+  --p-surface-0: #ffffff;
+  --p-surface-50: #fafafa;
+  --p-surface-100: #f4f4f5;
+  --p-surface-200: #e4e4e7;
+  --p-surface-300: #d4d4d8;
+  --p-surface-400: #a1a1aa;
+  --p-surface-500: #71717a;
+  --p-surface-600: #52525b;
+  --p-surface-700: #3f3f46;
+  --p-surface-800: #27272a;
+  --p-surface-900: #18181b;
+  --p-surface-950: #09090b;
+  --p-primary-color: var(--p-primary-500);
+  --p-primary-contrast-color: #ffffff;
+  --p-primary-hover-color: var(--p-primary-600);
+  --p-primary-active-color: var(--p-primary-700);
+}
+
 * {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-:root {
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+body {
+  background: white;
+  color: #3f3f46;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #3b82f6 !important;
+  outline: none;
 }
 
-/*@media (prefers-color-scheme: light) {
+[data-pc-name="toast"] [data-pc-section="message"] {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+  color: #2563eb !important;
+}
+
+[data-pc-name="select"]:focus-within {
+  border-color: #3b82f6 !important;
+}
+
+[data-pc-name="radiobutton"],
+[data-pc-name="toggleswitch"] {
+  position: relative !important;
+}
+
+[data-pc-name="radiobutton"] input,
+[data-pc-name="toggleswitch"] input {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  z-index: 10 !important;
+  opacity: 0.01 !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+[data-pc-name="radiobutton"] [data-pc-section="box"],
+[data-pc-name="toggleswitch"] [data-pc-section="slider"],
+[data-pc-name="toggleswitch"] [data-pc-section="handle"] {
+  pointer-events: none !important;
+}
+
+[data-pc-name="toggleswitch"][data-p-checked="true"] [data-pc-section="slider"] {
+  background-color: #3b82f6 !important;
+}
+
+[data-pc-name="toggleswitch"][data-p-checked="true"] [data-pc-section="handle"] {
+  left: 1.25rem !important;
+}
+
+[data-pc-name="radiobutton"][data-p-checked="true"] [data-pc-section="box"] {
+  background-color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+}
+
+[data-pc-name="radiobutton"][data-p-checked="true"] [data-pc-section="icon"] {
+  background-color: white !important;
+  transform: scale(1) !important;
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color-scheme: light !important;
   }
-  a:hover {
-    color: #747bff;
+  
+  .dark\:bg-surface-950,
+  [class*="dark:bg-surface-950"] {
+    background-color: white !important;
   }
-  button {
-    background-color: #f9f9f9;
+  
+  .dark\:bg-surface-900,
+  [class*="dark:bg-surface-900"] {
+    background-color: white !important;
   }
-}*/
+  
+  .dark\:text-surface-0,
+  [class*="dark:text-surface-0"] {
+    color: var(--p-surface-700) !important;
+  }
+  
+  .dark\:bg-surface-800,
+  [class*="dark:bg-surface-800"] {
+    background-color: var(--p-surface-100) !important;
+  }
+  
+  .dark\:bg-surface-700,
+  [class*="dark:bg-surface-700"] {
+    background-color: var(--p-surface-200) !important;
+  }
+  
+  .dark\:border-surface-700,
+  [class*="dark:border-surface-700"] {
+    border-color: var(--p-surface-300) !important;
+  }
+  
+  .dark\:text-surface-300,
+  [class*="dark:text-surface-300"] {
+    color: var(--p-surface-600) !important;
+  }
+  
+  .dark\:text-surface-400,
+  [class*="dark:text-surface-400"] {
+    color: var(--p-surface-500) !important;
+  }
+  
+  .dark\:bg-surface-400,
+  [class*="dark:bg-surface-400"] {
+    background-color: white !important;
+  }
+  
+  .dark\:p-disabled\:bg-surface-400,
+  [class*="dark:p-disabled:bg-surface-400"] {
+    background-color: var(--p-surface-200) !important;
+  }
+  
+  .dark\:text-surface-900,
+  [class*="dark:text-surface-900"] {
+    color: var(--p-surface-700) !important;
+  }
+  
+  .dark\:p-checked\:bg-surface-900,
+  [class*="dark:p-checked:bg-surface-900"] {
+    background-color: white !important;
+  }
+  
+  .dark\:p-disabled\:bg-surface-900,
+  [class*="dark:p-disabled:bg-surface-900"] {
+    background-color: var(--p-surface-200) !important;
+  }
+  
+  .dark\:p-disabled\:bg-surface-600,
+  [class*="dark:p-disabled:bg-surface-600"] {
+    background-color: var(--p-surface-200) !important;
+  }
+  
+  .dark\:p-disabled\:border-surface-700,
+  [class*="dark:p-disabled:border-surface-700"] {
+    border-color: var(--p-surface-300) !important;
+  }
+  
+  .dark\:enabled\:hover\:border-surface-600,
+  [class*="dark:enabled:hover:border-surface-600"] {
+    border-color: var(--p-surface-400) !important;
+  }
+  
+  .dark\:enabled\:hover\:bg-surface-600,
+  [class*="dark:enabled:hover:bg-surface-600"] {
+    background-color: var(--p-surface-400) !important;
+  }
+}
+
+
+
+@theme {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+  --color-primary: #3b82f6;
+  --color-primary-contrast: #ffffff;
+  --color-primary-emphasis: #2563eb;
+  --color-primary-emphasis-alt: #1d4ed8;
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-600: #2563eb;
+}

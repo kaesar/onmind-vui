@@ -1,30 +1,35 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
+import tailwindcss from '@tailwindcss/vite'
+import path from 'path'
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins:[vue({
-    template: {
-      compilerOptions: {
-        isCustomElement: (tag) => tag.includes('-')
-      }
-    },
-    customElement: true
-  })],
+  plugins: [
+    vue(),
+    tailwindcss()
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
   build: {
     minify: 'terser',
     lib: {
-      entry: resolve(__dirname, 'src/main.ce.js'),
-      formats: ['es']
+      entry: path.resolve(__dirname, 'src/index.js'),
+      name: 'CuiVue',
+      formats: ['es'],
+      fileName: 'vui'
     },
     rollupOptions: {
+      external: ['vue', 'primevue', '@primevue/themes'],
       output: {
-        inlineDynamicImports: true,
-      },
-    },
-    commonjsOptions: {
-      include: [/node_modules/],
-    },
+        globals: {
+          vue: 'Vue',
+          primevue: 'PrimeVue'
+        },
+        assetFileNames: 'vui.[ext]'
+      }
+    }
   }
 })

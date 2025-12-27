@@ -1,41 +1,150 @@
 # OnMind-VUI
 
-Variation in User Interface (**VUI**), Native Web Components for cross use in **UI** with Content Pages (like Markdown) and Simple Web Apps. Based in a tiny selection from [**PrimeVue**](https://primevue.org/).
+Common User Interface (**VUI**), Vue components library based on [**PrimeVue Unstyled**](https://primevue.org/) with [**Tailwind CSS v4**](https://tailwindcss.com/) and **Volt** preset.
 
-> **PrimeVue** is a rich set of open source UI Components for Vue. It provides a comprehensive collection of customizable components.
+> **PrimeVue** is a rich set of open source UI Components for Vue. **Volt** is the Tailwind-based preset for PrimeVue Unstyled components.
 
-These components are an alternative to [**OnMind-CUI**](https://github.com/kaesar/onmind-cui) but using technologies like **Vue** and **Javascript**, it allows the standard way to include as `html` tags in simple Markdown (`.md`) files, for example with `markdown-it` parser (or similar feature in `remark` and others parsers).
+These components use **Vue 3**, **PrimeVue Unstyled**, and **Tailwind CSS v4** for modern, customizable UI components.
 
-The idea with Native Web Components is use with any other technologies because this is like simple `html` tag (with a Shadow DOM), and it could encapsulates even the styles.
-
-**OnMind-VUI** includes just this...
+**OnMind-VUI** includes:
 
 Component | Description
 -- | --
-`as-complete` | Autocomplete/ComboBox component
-`as-box` | Similar to Card to group components inside
-`as-button` | Common Button component
-`as-check` | Common Checkbox component
-`as-confirm` | Dialog with Modal with confirm action
-`as-datagrid` | Data grid/table with sorting, filtering and pagination
-`as-date` | Date picker component
-`as-embed` | Component to Embed content for the web (url)
-`as-image` | Common Image component
-`as-input` | Common Input component (text, email, password, number)
-`as-radio` | Common Radio button group component
-`as-select` | Dropdown/Select component
-`as-switch` | Toggle switch component
-`as-text` | TextArea component
-`as-time` | Time picker component
-`as-video` | Common Video component (for YouTube links)
+`AsComplete` | Autocomplete/ComboBox component (PrimeVue + Volt)
+`AsBox` | Card-like container to group components (Custom)
+`AsButton` | Button component (PrimeVue + Volt)
+`AsCheck` | Checkbox component (PrimeVue + Volt)
+`AsConfirm` | Confirmation dialog with modal (PrimeVue + Volt)
+`AsDatagrid` | Data grid/table with sorting, filtering and pagination (Custom)
+`AsDate` | Date picker component (PrimeVue + Volt)
+`AsEmbed` | Embed web content component (Custom)
+`AsEvent` | Input with icon to trigger custom events (Custom)
+`AsForm` | Schema-based form component with validation (Custom)
+`AsImage` | Image component (Custom)
+`AsInput` | Input component for text, email, password, number (PrimeVue + Volt)
+`AsModal` | Modal dialog component with slot support (Custom)
+`AsPopup` | Context menu/popup component with smart positioning (Custom)
+`AsRadio` | Radio button group component (PrimeVue + Volt)
+`AsSelect` | Dropdown/Select component (PrimeVue + Volt)
+`AsSwitch` | Toggle switch component (PrimeVue + Volt)
+`AsText` | TextArea component (PrimeVue + Volt)
+`AsTime` | Time picker component (PrimeVue + Volt)
+`AsUpload` | File upload component with drag-and-drop support (Custom)
+`AsVideo` | Video component for YouTube embeds (Custom)
 
-> To use, you can include these `tags` in simple Markdown files or Web Apps.
+## Development
 
-## How to install it ?
+1. Clone or download: `git clone https://github.com/kaesar/onmind-vui.git vui`
+2. Open folder: `cd vui`
+3. Install dependencies: `npm install`
+4. Start dev server: `npm start`
+5. Build for production: `npm run build`
 
-1. Clone it or download: `git clone https://github.com/kaesar/onmind-vui.git vui`
-2. Open the folder from terminal: `cd vui`
-3. Install modules: `npm install`
-4. Launch vite: `npm start`
+> The build generates optimized files in the `dist` folder with Tailwind CSS compiled.
 
-> You get the `vui.js` file under `dist` folder and put in a `script` tag in `html` (e.g. in `head`)
+---
+
+## Usage in Your Project
+
+### Option 1: Standard Web Project (HTML/Templates)
+
+For projects using plain HTML or template engines:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="/node_modules/primeicons/primeicons.css">
+  <link rel="stylesheet" href="/static/onmind-vui-v2.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Your template content -->
+  </div>
+  
+  <script type="module">
+    import { createApp } from '/node_modules/vue/dist/vue.esm-browser.js'
+    import PrimeVue from '/node_modules/primevue/config/config.esm.js'
+    import ConfirmationService from '/node_modules/primevue/confirmationservice/confirmationservice.esm.js'
+    import ToastService from '/node_modules/primevue/toastservice/toastservice.esm.js'
+    import { AsButton, AsInput, AsSelect } from '/static/onmind-vui-v2.js'
+    
+    const app = createApp({
+      components: { AsButton, AsInput, AsSelect },
+      // Your app logic
+    })
+    
+    app.use(PrimeVue, { unstyled: true })
+    app.use(ConfirmationService)
+    app.use(ToastService)
+    app.mount('#app')
+  </script>
+</body>
+</html>
+```
+
+> **Note:** You'll need a module bundler (JS) to use ES modules in the browser.
+
+### Option 2: With Tailwind CSS (Recommended)
+
+If your project already has Tailwind CSS v3 or v4:
+
+```javascript
+// main.js
+import { createApp } from 'vue'
+import PrimeVue from 'primevue/config'
+import ConfirmationService from 'primevue/confirmationservice'
+import ToastService from 'primevue/toastservice'
+import 'primeicons/primeicons.css'
+
+const app = createApp(App)
+app.use(PrimeVue, { unstyled: true })
+app.use(ConfirmationService)
+app.use(ToastService)
+app.mount('#app')
+```
+
+```javascript
+// YourComponent.vue
+import { AsButton, AsInput, AsSelect } from 'onmind-vui-v2'
+// No need to import CSS - your Tailwind will generate the styles
+```
+
+**Important:** Configure Tailwind to scan onmind-vui components:
+
+```javascript
+// tailwind.config.js
+module.exports = {
+  content: [
+    './src/**/*.{js,vue,html}',
+    './public/onmind-vui-v2/**/*.{js,vue}' // Scan onmind-vui components
+  ]
+}
+```
+
+### Option 3: Without Tailwind CSS
+
+If your project doesn't have Tailwind CSS:
+
+```javascript
+// main.js
+import { createApp } from 'vue'
+import PrimeVue from 'primevue/config'
+import ConfirmationService from 'primevue/confirmationservice'
+import ToastService from 'primevue/toastservice'
+import 'primeicons/primeicons.css'
+import 'public/onmind-vui-v2.css' // Import precompiled CSS
+
+const app = createApp(App)
+app.use(PrimeVue, { unstyled: true })
+app.use(ConfirmationService)
+app.use(ToastService)
+app.mount('#app')
+```
+
+And for Vue components
+
+```javascript
+// YourComponent.vue
+import { AsButton, AsInput, AsSelect } from 'onmind-vui-v2'
+```
