@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import DatePicker from '@/volt/DatePicker.vue'
 
 const props = defineProps({
@@ -10,7 +10,20 @@ const props = defineProps({
   disabled: { type: Boolean, default: false }
 })
 
+const emit = defineEmits(['value-changed'])
+
 const timeValue = ref(props.value ? new Date(`1970-01-01T${props.value}`) : null)
+
+const formatTime = (d) => {
+  if (!d) return ''
+  const h = String(d.getHours()).padStart(2, '0')
+  const m = String(d.getMinutes()).padStart(2, '0')
+  return `${h}:${m}`
+}
+
+watch(timeValue, (val) => {
+  emit('value-changed', { detail: { value: formatTime(val) } })
+})
 </script>
 
 <template>

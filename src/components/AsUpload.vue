@@ -51,10 +51,10 @@ function handleDrop(e) {
   <div 
     class="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all"
     :class="{
-      'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800': !dragOver && !disabled,
-      'border-blue-400 bg-blue-50 dark:bg-blue-900/20': dragOver,
+      'border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-100': !dragOver && !disabled,
+      'border-primary bg-primary-50 dark:bg-primary-50': dragOver,
       'opacity-50 cursor-not-allowed': disabled,
-      'hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20': !disabled && !dragOver
+      'hover:border-primary hover:bg-primary-50 dark:hover:bg-primary-50': !disabled && !dragOver
     }"
     @click="handleClick"
     @dragover="handleDragOver"
@@ -62,8 +62,8 @@ function handleDrop(e) {
     @drop="handleDrop"
   >
     <div class="text-2xl mb-2">📁</div>
-    <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ label }}</div>
-    <div class="text-xs text-gray-500 dark:text-gray-400">Click or drag files here</div>
+    <div class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">{{ label }}</div>
+    <div class="text-xs text-surface-500 dark:text-surface-400">Click or drag files here</div>
     
     <input 
       ref="fileInput"

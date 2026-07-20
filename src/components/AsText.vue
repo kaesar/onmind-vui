@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import Textarea from '@/volt/Textarea.vue'
 
 const props = defineProps({
@@ -11,7 +11,13 @@ const props = defineProps({
   disabled: { type: Boolean, default: false }
 })
 
+const emit = defineEmits(['value-changed'])
+
 const textValue = ref(props.value)
+
+watch(textValue, (val) => {
+  emit('value-changed', { detail: { value: val } })
+})
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import Select from '@/volt/Select.vue'
 
 const props = defineProps({
@@ -10,7 +10,13 @@ const props = defineProps({
   disabled: { type: Boolean, default: false }
 })
 
+const emit = defineEmits(['value-changed'])
+
 const selectedValue = ref(props.value)
+
+watch(selectedValue, (val) => {
+  emit('value-changed', { detail: { value: val } })
+})
 
 const items = computed(() => {
   if (!props.options) return []

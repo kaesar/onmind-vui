@@ -8,7 +8,8 @@ const props = defineProps({
   label: String,
   link: String,
   message: String,
-  variant: { type: String, default: 'primary' }
+  variant: { type: String, default: 'primary' },
+  disabled: { type: Boolean, default: false }
 })
 const emit = defineEmits(['button-tap'])
 const toast = useToast()
@@ -25,7 +26,7 @@ function handleButton() {
 </script>
 
 <template>
-  <SecondaryButton v-if="variant === 'secondary'" :label="label" @click="handleButton" />
-  <Button v-else :label="label" @click="handleButton" />
+  <SecondaryButton v-if="variant === 'secondary'" :label="label" :disabled="disabled" @click="handleButton" />
+  <Button v-else :label="label" :disabled="disabled" @click="handleButton" />
   <Toast position="bottom-center" />
 </template>

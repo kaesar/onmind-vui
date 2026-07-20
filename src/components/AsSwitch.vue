@@ -1,22 +1,30 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import ToggleSwitch from '@/volt/ToggleSwitch.vue'
 
 const props = defineProps({
   label: { type: String, default: '' },
-  checked: { type: Boolean, default: false }
+  checked: { type: Boolean, default: false },
+  readonly: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false }
 })
+
+const emit = defineEmits(['checked-changed'])
 
 const value = ref(props.checked)
 
-const toggle = () => {
-  value.value = !value.value
-}
+watch(value, (val) => {
+  emit('checked-changed', { detail: { value: val } })
+})
 </script>
 
 <template>
-  <div @click.stop="toggle" style="display: inline-block; cursor: pointer;">
-    <ToggleSwitch :key="value" :modelValue="value" @update:modelValue="value = $event" />
+  <div class="flex items-center gap-2">
+    <ToggleSwitch
+      v-model="value"
+      :readonly="readonly"
+      :disabled="disabled"
+    />
+    <label v-if="label" class="ml-2">{{ label }}</label>
   </div>
-  <label v-if="label" class="ml-2">{{ label }}</label>
 </template>

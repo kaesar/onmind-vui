@@ -10,6 +10,9 @@ import AsDate from './AsDate.vue'
 import AsTime from './AsTime.vue'
 import AsComplete from './AsComplete.vue'
 import AsButton from './AsButton.vue'
+import { AsFormBuilder } from '../AsFormBuilder.js'
+
+const formBuilder = new AsFormBuilder()
 
 const props = defineProps({
   schema: { type: Object, default: () => ({}) },
@@ -41,36 +44,7 @@ const allFields = computed(() => {
 })
 
 function validateField(value, rules) {
-  if (!rules) return { valid: true }
-  
-  for (const rule of rules) {
-    const [ruleName, ruleParam] = rule.split(':')
-    
-    switch (ruleName) {
-      case 'required':
-        if (!value || value.toString().trim().length === 0) {
-          return { valid: false, message: 'This field is required' }
-        }
-        break
-      case 'email':
-        if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          return { valid: false, message: 'Please enter a valid email address' }
-        }
-        break
-      case 'min':
-        if (value && value.toString().length < parseInt(ruleParam)) {
-          return { valid: false, message: `Minimum ${ruleParam} characters required` }
-        }
-        break
-      case 'max':
-        if (value && value.toString().length > parseInt(ruleParam)) {
-          return { valid: false, message: `Maximum ${ruleParam} characters allowed` }
-        }
-        break
-    }
-  }
-  
-  return { valid: true }
+  return formBuilder.validateField(value, rules)
 }
 
 function handleFieldChange(fieldName, value, validation) {
@@ -226,6 +200,49 @@ onMounted(() => {
             :disabled="field.disabled"
             :theme="theme"
             @checked-changed="e => handleFieldChange(field.name, e.detail?.value || e, field.validation)"
+          />
+
+          <AsRadio
+            v-else-if="field.type === 'radio'"
+            :label="field.label"
+            :value="formData[field.name] || field.value || ''"
+            :options="formatOptions(field.options)"
+            :disabled="field.disabled"
+            :theme="theme"
+            @value-changed="e => handleFieldChange(field.name, e.detail?.value || e, field.validation)"
+          />
+
+          <AsDate
+            v-else-if="field.type === 'date'"
+            :label="field.label"
+            :value="formData[field.name] || field.value || ''"
+            :placeholder="field.placeholder"
+            :readonly="field.readonly"
+            :disabled="field.disabled"
+            :theme="theme"
+            @value-changed="e => handleFieldChange(field.name, e.detail?.value || e, field.validation)"
+          />
+
+          <AsTime
+            v-else-if="field.type === 'time'"
+            :label="field.label"
+            :value="formData[field.name] || field.value || ''"
+            :placeholder="field.placeholder"
+            :readonly="field.readonly"
+            :disabled="field.disabled"
+            :theme="theme"
+            @value-changed="e => handleFieldChange(field.name, e.detail?.value || e, field.validation)"
+          />
+
+          <AsComplete
+            v-else-if="field.type === 'complete'"
+            :label="field.label"
+            :value="formData[field.name] || field.value || ''"
+            :options="formatOptions(field.options)"
+            :readonly="field.readonly"
+            :disabled="field.disabled"
+            :theme="theme"
+            @value-changed="e => handleFieldChange(field.name, e.detail?.value || e, field.validation)"
           />
           
           <div v-if="errors[field.name]" class="text-red-600 dark:text-red-400 text-sm">

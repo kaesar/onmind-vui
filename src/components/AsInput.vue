@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import InputText from '@/volt/InputText.vue'
 import Password from '@/volt/Password.vue'
 import InputNumber from '@/volt/InputNumber.vue'
@@ -13,7 +13,13 @@ const props = defineProps({
   disabled: { type: Boolean, default: false }
 })
 
+const emit = defineEmits(['value-changed'])
+
 const inputValue = ref(props.value)
+
+watch(inputValue, (val) => {
+  emit('value-changed', { detail: { value: val } })
+})
 </script>
 
 <template>

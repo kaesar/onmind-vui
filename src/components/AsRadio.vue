@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import RadioButton from '@/volt/RadioButton.vue'
 
 const props = defineProps({
@@ -8,7 +8,13 @@ const props = defineProps({
   options: { type: String, default: 'label=A,value=A;label=B,value=B;label=C,value=C' }
 })
 
+const emit = defineEmits(['value-changed'])
+
 const selectedValue = ref(props.value)
+
+watch(selectedValue, (val) => {
+  emit('value-changed', { detail: { value: val } })
+})
 
 const items = computed(() => {
   if (!props.options) return []
