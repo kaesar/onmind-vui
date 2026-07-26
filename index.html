@@ -1,12 +1,228 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CUI Vue + Tailwind v4</title>
+    <title>VUI v3 - Visual User Interface Components</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+
+      body {
+        margin: 0;
+        display: grid;
+        place-items: center;
+        min-width: 320px;
+        min-height: 100vh;
+        transition: background-color 0.2s;
+      }
+
+      body.theme-dark {
+        background-color: #242424;
+        color: rgba(255, 255, 255, 0.87);
+      }
+
+      body.theme-light {
+        background-color: #ffffff;
+        color: #213547;
+      }
+
+      #theme-toolbar {
+        position: fixed;
+        top: 0.5rem;
+        right: 0.5rem;
+        z-index: 9999;
+      }
+
+      #themeToggle {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", Helvetica, Arial, sans-serif;
+        cursor: pointer;
+        background: #3b82f6;
+        color: white;
+        transition: background 0.15s;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      }
+
+      #themeToggle:hover {
+        background: #2563eb;
+      }
+    </style>
+    <script type="module" src="/src/index.ts"></script>
   </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+  <body class="theme-dark">
+    <div id="theme-toolbar">
+      <button id="themeToggle">Switch to Light</button>
+    </div>
+
+    <as-box id="mainBox" theme="dark">
+      <as-input label="Name" value="John"></as-input>
+      <as-input label="Last Name" value="Doe"></as-input>
+      <as-text label="Comments" rows="3" placeholder="Enter your comments"></as-text>
+      <as-date label="Birth Date" placeholder="Select date"></as-date>
+      <as-time label="Meeting Time" placeholder="Select time"></as-time>
+      <as-check label="Check me"></as-check>
+      <as-switch label="Switch me"></as-switch>
+      <as-radio label="Choose one" options="label=Option A,value=a;label=Option B,value=b;label=Option C,value=c"></as-radio>
+      <as-select label="Pick a language" options="label=JavaScript,value=js;label=TypeScript,value=ts;label=Python,value=py"></as-select>
+      <as-complete label="Search language" options="label=JavaScript,value=js;label=TypeScript,value=ts;label=Python,value=py;label=Java,value=java"></as-complete>
+      <as-event id="eventField" label="Actions" placeholder="Select action" event="show-menu"></as-event>
+      <as-upload label="Upload files"></as-upload>
+      <as-confirm label="Delete" message="Are you sure you want to delete this item?"></as-confirm>
+      <as-modal id="testModal" title="User Registration" theme="dark">
+        <as-form id="userForm"></as-form>
+      </as-modal>
+      <as-button id="openModalBtn" label="Open Modal Form"></as-button>
+      <as-datagrid id="table" title="Users" selectable filterable pageable actionable theme="dark"></as-datagrid>
+    </as-box>
+
+    <as-index id="cardsDemo" filtering title="VUI v3 Components" style="margin-top: 1rem; max-width: 900px;"></as-index>
+
+    <script type="module">
+      // ── Theme toggle ──────────────────────────────────────────
+      const mainBox = document.getElementById('mainBox');
+      const toggleBtn = document.getElementById('themeToggle');
+      const testModal = document.getElementById('testModal');
+      const tableEl = document.getElementById('table');
+      const cardsDemo = document.getElementById('cardsDemo');
+
+      toggleBtn.addEventListener('click', () => {
+        const isDark = mainBox.getAttribute('theme') !== 'light';
+        const newTheme = isDark ? 'light' : 'dark';
+
+        // Container cascades to slotted children
+        mainBox.setAttribute('theme', newTheme);
+
+        // Components with explicit theme attributes
+        testModal.setAttribute('theme', newTheme);
+        tableEl.setAttribute('theme', newTheme);
+        cardsDemo.setAttribute('theme', newTheme);
+
+        // Body background
+        document.body.className = `theme-${newTheme}`;
+
+        // Sync data-theme on <html> for createThemeSync
+        document.documentElement.setAttribute('data-theme', newTheme);
+
+        // Button text
+        toggleBtn.textContent = isDark ? 'Switch to Dark' : 'Switch to Light';
+      });
+
+      // ── DataGrid ─────────────────────────────────────────────
+      const table = tableEl;
+      table.data = Array.from({length: 20}, (_, i) => ({
+        id: i + 1,
+        name: `User ${i + 1}`,
+        email: `user${i + 1}@example.com`,
+        role: ['Admin', 'Editor', 'Viewer'][Math.floor(Math.random()*3)],
+        status: Math.random() > 0.5 ? 'Active' : 'Inactive'
+      }));
+      table.columns = [
+        { key: 'name', header: 'Name' },
+        { key: 'email', header: 'Email' },
+        { key: 'role', header: 'Role' },
+        { key: 'status', header: 'Status' }
+      ];
+
+      // ── Popup for datagrid actions ────────────────────────────
+      const popup = document.createElement('as-popup');
+      popup.options = 'label=Edit,value=edit;label=Duplicate,value=duplicate;label=Delete,value=delete';
+      document.body.appendChild(popup);
+
+      table.addEventListener('row-action', (e) => {
+        popup.show(e.detail.event.clientX, e.detail.event.clientY);
+        popup._currentRow = e.detail.row;
+      });
+
+      popup.addEventListener('option-select', (e) => {
+        alert(`${e.detail.label}: ${popup._currentRow.name}`);
+      });
+
+      // ── Event field with popup ────────────────────────────────
+      const eventField = document.getElementById('eventField');
+      const eventPopup = document.createElement('as-popup');
+      eventPopup.options = 'label=Configure,value=config;label=Export,value=export;label=Reset,value=reset';
+      document.body.appendChild(eventPopup);
+
+      eventField.addEventListener('show-menu', () => {
+        const rect = eventField.getBoundingClientRect();
+        eventPopup.show(rect.right, rect.bottom);
+      });
+
+      eventPopup.addEventListener('option-select', (e) => {
+        eventField.value = e.detail.label;
+        alert(`Action: ${e.detail.label}`);
+      });
+
+      // ── Modal form ────────────────────────────────────────────
+      const userForm = document.getElementById('userForm');
+      const openModalBtn = document.getElementById('openModalBtn');
+
+      userForm.schema = {
+        title: 'User Registration',
+        sections: [
+          {
+            title: 'Personal Information',
+            fields: [
+              { name: 'firstName', type: 'text', label: 'First Name', required: true, validation: ['required', 'min:2'] },
+              { name: 'lastName', type: 'text', label: 'Last Name', required: true, validation: ['required', 'min:2'] },
+              { name: 'email', type: 'email', label: 'Email', required: true, validation: ['required', 'email'] }
+            ]
+          },
+          {
+            title: 'Preferences',
+            fields: [
+              { name: 'newsletter', type: 'switch', label: 'Subscribe to newsletter' },
+              { name: 'role', type: 'select', label: 'Role', options: [
+                { label: 'User', value: 'user' },
+                { label: 'Admin', value: 'admin' },
+                { label: 'Editor', value: 'editor' }
+              ]}
+            ]
+          }
+        ]
+      };
+
+      openModalBtn.addEventListener('button-tap', () => testModal.show());
+
+      userForm.addEventListener('form-submit', (e) => {
+        console.log('Form submitted:', e.detail.formData);
+        alert('Form submitted successfully!');
+        testModal.hide();
+      });
+
+      userForm.addEventListener('form-cancel', () => testModal.hide());
+
+      // ── as-index demo ────────────────────────────────────────
+      cardsDemo.items = [
+        { title: 'as-input', description: 'Text input with label, supports text/email/password/number', tags: ['form', 'input'], url: '#' },
+        { title: 'as-text', description: 'Multi-line textarea with label and rows', tags: ['form', 'input'], url: '#' },
+        { title: 'as-select', description: 'Dropdown select with options format', tags: ['form', 'select'], url: '#' },
+        { title: 'as-complete', description: 'Autocomplete/combobox with filtering', tags: ['form', 'select'], url: '#' },
+        { title: 'as-date', description: 'Date picker with calendar dropdown', tags: ['form', 'picker'], url: '#' },
+        { title: 'as-time', description: 'Time picker with hour/minute/AM-PM selectors', tags: ['form', 'picker'], url: '#' },
+        { title: 'as-check', description: 'Single checkbox with label', tags: ['form', 'toggle'], url: '#' },
+        { title: 'as-switch', description: 'Toggle switch component', tags: ['form', 'toggle'], url: '#' },
+        { title: 'as-radio', description: 'Radio button group', tags: ['form', 'select'], url: '#' },
+        { title: 'as-upload', description: 'File upload with drag-and-drop', tags: ['form', 'upload'], url: '#' },
+        { title: 'as-button', description: 'Button with primary/secondary variants', tags: ['action'], url: '#' },
+        { title: 'as-confirm', description: 'Confirmation dialog', tags: ['action'], url: '#' },
+        { title: 'as-event', description: 'Input that dispatches custom events', tags: ['action'], url: '#' },
+        { title: 'as-box', description: 'Container card for grouping components', tags: ['layout'], url: '#' },
+        { title: 'as-modal', description: 'Modal dialog with slot', tags: ['layout'], url: '#' },
+        { title: 'as-popup', description: 'Context menu with smart positioning', tags: ['layout'], url: '#' },
+        { title: 'as-datagrid', description: 'Data table with sort, filter, pagination', tags: ['data'], url: '#' },
+        { title: 'as-form', description: 'Schema-driven form with validation', tags: ['data', 'form'], url: '#' },
+        { title: 'as-index', description: 'Card index with filtering and tag search', tags: ['data', 'layout'], url: '#' },
+        { title: 'as-image', description: 'Centered image display', tags: ['media'], url: '#' },
+        { title: 'as-video', description: 'Video embed for YouTube/Vimeo', tags: ['media'], url: '#' },
+        { title: 'as-embed', description: 'Responsive iframe embed (16:9)', tags: ['media'], url: '#' }
+      ];
+    </script>
   </body>
 </html>
