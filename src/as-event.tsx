@@ -72,6 +72,7 @@ class AsEvent extends HTMLElement {
             margin-left: 0.5rem; width: 16px; height: 16px;
             display: flex; align-items: center; justify-content: center; flex-shrink: 0;
             color: ${isDark() ? '#a1a1aa' : '#71717a'};
+            cursor: pointer;
           }
         `}</style>
         <div class="field">

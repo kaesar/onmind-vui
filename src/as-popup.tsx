@@ -17,6 +17,8 @@ class AsPopup extends HTMLElement {
     const [showConfirm, setShowConfirm] = createSignal(false)
     const [pendingItem, setPendingItem] = createSignal<any>(null)
 
+    let ignoreClick = false
+
     let modalElement: HTMLElement | null = null
 
     const isDark = () => theme() === 'dark'
@@ -31,8 +33,10 @@ class AsPopup extends HTMLElement {
     observer.observe(this, { attributes: true })
 
     const show = (xPos: number, yPos: number) => {
+      ignoreClick = true
+      setTimeout(() => { ignoreClick = false }, 100)
       const viewportHeight = window.innerHeight
-      const popupWidth = 142 // Ancho estimado del popup (min-width: 140px + border: 2px)
+      const popupWidth = 142
       const popupHeight = items().length * 40
       let adjustedX = xPos - popupWidth
       if (adjustedX < 10) adjustedX = xPos + 10
@@ -95,6 +99,7 @@ class AsPopup extends HTMLElement {
     const cancelAction = () => { setShowConfirm(false); setPendingItem(null); hideModalOutside(); hide() }
 
     const outsideClickHandler = (e: Event) => {
+      if (ignoreClick) return
       const target = e.target as Element
       if (!target.closest('as-popup') && !showConfirm()) hide()
     }

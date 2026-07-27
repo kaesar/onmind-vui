@@ -4,6 +4,7 @@ import { createStandardAttributes } from './attribute-observer'
 
 class AsDate extends HTMLElement {
   private dispose?: () => void
+  private _closeHandler?: (e: Event) => void
 
   connectedCallback() {
     const [label, setLabel] = createSignal(this.getAttribute('label') || '')
@@ -60,8 +61,33 @@ class AsDate extends HTMLElement {
       this.dispatchEvent(new CustomEvent('value-changed', { detail: { value: date }, bubbles: true, composed: true }))
     }
 
-    const displayValue = () => value() || placeholder() || 'Select date'
     const isPlaceholder = () => !value()
+
+    const validateDate = (input: string) => {
+      const match = input.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+      if (!match) return false
+      const [, , m, d] = match.map(Number)
+      if (m < 1 || m > 12) return false
+      if (d < 1 || d > 31) return false
+      return true
+    }
+
+    const handleInputChange = (e: Event) => {
+      const target = e.target as HTMLInputElement
+      const inputValue = target.value
+      if (inputValue === '') { setValue(''); return }
+      if (validateDate(inputValue)) {
+        setValue(inputValue)
+        const [y, m] = inputValue.split('-').map(Number)
+        setYear(y)
+        setMonth(m - 1)
+      }
+    }
+
+    const handleInputBlur = (e: Event) => {
+      const target = e.target as HTMLInputElement
+      if (target.value && !validateDate(target.value)) target.value = value() || ''
+    }
 
     const Component = () => (
       <>
@@ -79,8 +105,14 @@ class AsDate extends HTMLElement {
           }
           .date-trigger.placeholder { color: ${isDark() ? '#a1a1aa' : '#71717a'}; }
           .date-trigger:hover:not([aria-disabled="true"]) { border-color: ${isDark() ? '#52525b' : '#a1a1aa'}; }
-          .date-trigger:focus { border-color: #3b82f6; }
+          .date-trigger:focus-within { border-color: #3b82f6; }
           .date-trigger[aria-disabled="true"] { background: ${isDark() ? '#3f3f46' : '#e4e4e7'}; color: ${isDark() ? '#a1a1aa' : '#71717a'}; cursor: not-allowed; }
+          .date-input {
+            flex: 1; border: none; outline: none; background: transparent;
+            font-family: inherit; font-size: 0.875rem; color: inherit; cursor: pointer;
+          }
+          .date-input::placeholder { color: ${isDark() ? '#a1a1aa' : '#71717a'}; }
+          .date-input:disabled { cursor: not-allowed; opacity: 0.5; }
           .icon { margin-left: 0.5rem; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: ${isDark() ? '#a1a1aa' : '#71717a'}; }
           .dropdown {
             position: absolute; top: 100%; left: 0;
@@ -112,13 +144,20 @@ class AsDate extends HTMLElement {
           {label() && <label>{label()}</label>}
           <div
             class={`date-trigger ${isPlaceholder() ? 'placeholder' : ''}`}
-            tabindex="0"
             aria-disabled={disabled()}
-            onClick={() => { if (disabled() || readonly()) return; setOpen(!open()) }}
-            onBlur={() => setTimeout(() => setOpen(false), 200)}
           >
-            <span>{displayValue()}</span>
-            <span class="icon">
+            <input
+              type="text"
+              class="date-input"
+              value={value() || ''}
+              placeholder={placeholder() || 'Select date'}
+              readonly={readonly()}
+              disabled={disabled()}
+              onFocus={() => { if (!disabled() && !readonly()) setOpen(true) }}
+              onBlur={(e) => { handleInputBlur(e); setOpen(false) }}
+              onInput={handleInputChange}
+            />
+            <span class="icon" onClick={() => { if (disabled() || readonly()) return; setOpen(!open()) }}>
               <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                 <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
               </svg>
@@ -156,9 +195,17 @@ class AsDate extends HTMLElement {
 
     const shadowRoot = this.attachShadow({ mode: 'open' })
     this.dispose = render(Component, shadowRoot)
+
+    this._closeHandler = (e: Event) => {
+      if (!this.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('click', this._closeHandler, true)
   }
 
-  disconnectedCallback() { this.dispose?.() }
+  disconnectedCallback() {
+    this.dispose?.()
+    if (this._closeHandler) document.removeEventListener('click', this._closeHandler, true)
+  }
 
   static get observedAttributes() {
     return ['label', 'value', 'placeholder', 'theme', 'readonly', 'disabled']
