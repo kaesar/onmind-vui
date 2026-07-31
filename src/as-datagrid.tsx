@@ -109,7 +109,10 @@ class AsDatagrid extends HTMLElement {
           :host([theme="dark"]) .filter-input {
             background: #09090b; color: #ffffff; border-color: #3f3f46;
           }
-          .filter-input:focus { border-color: #3b82f6; }
+          :host([theme="dark"]) .filter-input:focus {
+            border-color: #3b82f6;
+          }
+          .filter-input:not(:disabled):focus { border-color: #3b82f6; }
           .table-wrapper { overflow-x: auto; }
           table { width: 100%; border-collapse: collapse; }
           thead {

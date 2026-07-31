@@ -137,7 +137,7 @@ class AsComplete extends HTMLElement {
           input:hover:not(:disabled) {
             border-color: ${isDark() ? '#52525b' : '#a1a1aa'};
           }
-          input:focus { border-color: #3b82f6; }
+          input:focus:not(:disabled) { border-color: #3b82f6; }
           input::placeholder { color: ${isDark() ? '#a1a1aa' : '#71717a'}; }
           input:disabled {
             background: ${isDark() ? '#3f3f46' : '#e4e4e7'};

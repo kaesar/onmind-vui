@@ -90,7 +90,7 @@ class AsSelect extends HTMLElement {
           .select-trigger:hover:not([aria-disabled="true"]) {
             border-color: ${isDark() ? '#52525b' : '#a1a1aa'};
           }
-          .select-trigger:focus {
+          .select-trigger:focus:not([aria-disabled="true"]) {
             border-color: #3b82f6;
           }
           .select-trigger[aria-disabled="true"] {

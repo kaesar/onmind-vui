@@ -67,7 +67,7 @@ class AsText extends HTMLElement {
           textarea:hover:not(:disabled) {
             border-color: ${theme() === 'dark' ? '#52525b' : '#a1a1aa'};
           }
-          textarea:focus {
+          textarea:focus:not(:disabled) {
             border-color: #3b82f6;
           }
           textarea::placeholder {

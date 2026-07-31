@@ -63,4 +63,4 @@ document.body.appendChild(form);
 2. Start dev server: `bun start`
 3. Build for production: `bun run build`
 
-> Build output: `dist/vui.js` (ESM, ~20KB gzipped)
+> Build output in: `dist/vui.js` (ESM, ~26KB gzipped)

@@ -71,7 +71,7 @@ class AsInput extends HTMLElement {
           input:hover:not(:disabled) {
             border-color: ${theme() === 'dark' ? '#52525b' : '#a1a1aa'};
           }
-          input:focus {
+          input:focus:not(:disabled) {
             border-color: #3b82f6;
           }
           input::placeholder {

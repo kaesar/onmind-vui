@@ -16,6 +16,7 @@ class AsDate extends HTMLElement {
     const [open, setOpen] = createSignal(false)
     const [year, setYear] = createSignal(new Date().getFullYear())
     const [month, setMonth] = createSignal(new Date().getMonth())
+    const [valid, setValid] = createSignal(true)
 
     const isDark = () => theme() === 'dark'
 
@@ -72,21 +73,35 @@ class AsDate extends HTMLElement {
       return true
     }
 
+    const formatDateWithMask = (digits: string) => {
+      if (digits.length <= 4) return digits
+      if (digits.length <= 6) return `${digits.slice(0, 4)}-${digits.slice(4)}`
+      return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`
+    }
+
     const handleInputChange = (e: Event) => {
       const target = e.target as HTMLInputElement
-      const inputValue = target.value
-      if (inputValue === '') { setValue(''); return }
-      if (validateDate(inputValue)) {
-        setValue(inputValue)
-        const [y, m] = inputValue.split('-').map(Number)
+      const digits = target.value.replace(/\D/g, '')
+      const formatted = formatDateWithMask(digits)
+      target.value = formatted
+      setValue(formatted)
+      if (validateDate(formatted)) {
+        const [y, m] = formatted.split('-').map(Number)
         setYear(y)
         setMonth(m - 1)
+        this.dispatchEvent(new CustomEvent('value-changed', { detail: { value: formatted }, bubbles: true, composed: true }))
       }
     }
 
     const handleInputBlur = (e: Event) => {
       const target = e.target as HTMLInputElement
-      if (target.value && !validateDate(target.value)) target.value = value() || ''
+      if (target.value && !validateDate(target.value)) {
+        target.value = value() || ''
+        setValid(false)
+      } else {
+        setValid(true)
+      }
+      setOpen(false)
     }
 
     const Component = () => (
@@ -105,8 +120,10 @@ class AsDate extends HTMLElement {
           }
           .date-trigger.placeholder { color: ${isDark() ? '#a1a1aa' : '#71717a'}; }
           .date-trigger:hover:not([aria-disabled="true"]) { border-color: ${isDark() ? '#52525b' : '#a1a1aa'}; }
-          .date-trigger:focus-within { border-color: #3b82f6; }
+          .date-trigger:focus-within:not([aria-disabled="true"]) { border-color: #3b82f6; }
           .date-trigger[aria-disabled="true"] { background: ${isDark() ? '#3f3f46' : '#e4e4e7'}; color: ${isDark() ? '#a1a1aa' : '#71717a'}; cursor: not-allowed; }
+          .date-trigger.invalid { border-color: #ef4444; }
+          .error-msg { font-size: 0.75rem; color: #ef4444; margin-top: 0.25rem; }
           .date-input {
             flex: 1; border: none; outline: none; background: transparent;
             font-family: inherit; font-size: 0.875rem; color: inherit; cursor: pointer;
@@ -143,7 +160,7 @@ class AsDate extends HTMLElement {
         <div class="field">
           {label() && <label>{label()}</label>}
           <div
-            class={`date-trigger ${isPlaceholder() ? 'placeholder' : ''}`}
+            class={`date-trigger ${isPlaceholder() ? 'placeholder' : ''} ${!valid() && !disabled() ? 'invalid' : ''}`}
             aria-disabled={disabled()}
           >
             <input
@@ -153,16 +170,18 @@ class AsDate extends HTMLElement {
               placeholder={placeholder() || 'Select date'}
               readonly={readonly()}
               disabled={disabled()}
-              onFocus={() => { if (!disabled() && !readonly()) setOpen(true) }}
+              onKeyDown={(e) => { if (e.key === 'Tab') setOpen(false) }}
+              onFocus={() => { setValid(true); if (!disabled() && !readonly()) setOpen(true) }}
               onBlur={(e) => { handleInputBlur(e); setOpen(false) }}
               onInput={handleInputChange}
             />
-            <span class="icon" onClick={() => { if (disabled() || readonly()) return; setOpen(!open()) }}>
+            <span class="icon" onClick={() => { if (disabled() || readonly()) return; setOpen(!open()) }} tabindex="-1">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                 <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
               </svg>
             </span>
           </div>
+          {!valid() && !disabled() && <span class="error-msg">* Use: YYYY-MM-DD</span>}
           {open() && (
             <div class="dropdown" onMouseDown={(e) => e.preventDefault()}>
               <div class="header">

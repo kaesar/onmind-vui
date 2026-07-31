@@ -64,7 +64,7 @@ class AsEvent extends HTMLElement {
           }
           .event-trigger.placeholder { color: ${isDark() ? '#a1a1aa' : '#71717a'}; }
           .event-trigger:hover:not([aria-disabled="true"]) { border-color: ${isDark() ? '#52525b' : '#a1a1aa'}; }
-          .event-trigger:focus { border-color: #3b82f6; }
+          .event-trigger:focus:not([aria-disabled="true"]) { border-color: #3b82f6; }
           .event-trigger[aria-disabled="true"] {
             background: ${isDark() ? '#3f3f46' : '#e4e4e7'}; color: ${isDark() ? '#a1a1aa' : '#71717a'}; cursor: not-allowed;
           }
